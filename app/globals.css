@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  html, body {
+    @apply bg-bg text-ink antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+  /* Tighter, financial-data-friendly numbers. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  /* Reusable focus ring across interactive elements. */
+  .focus-ring {
+    @apply outline-none ring-0 focus-visible:ring-2 focus-visible:ring-info/40 focus-visible:ring-offset-1 focus-visible:ring-offset-bg-panel;
+  }
+
+  /* Surface = the elevated white panels we put content on. */
+  .surface {
+    @apply bg-bg-panel border border-border rounded-xl;
+  }
+
+  /* A scroll container that fades the bottom edge. */
+  .scroll-fade {
+    mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  }
+
+  /* Skeleton shimmer. */
+  .skeleton {
+    @apply relative overflow-hidden bg-bg-subtle rounded-lg;
+    background-image: linear-gradient(
+      90deg,
+      rgba(244, 244, 245, 0) 0%,
+      rgba(228, 228, 231, 0.7) 50%,
+      rgba(244, 244, 245, 0) 100%
+    );
+    background-size: 200% 100%;
+    @apply animate-shimmer;
+  }
+}
+
+/* Custom scrollbars (Linear-ish). */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb {
+  background: #d4d4d8;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: #a1a1aa; background-clip: padding-box; border: 2px solid transparent; }
+::-webkit-scrollbar-track { background: transparent; }
