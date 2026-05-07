@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft, ChevronRight, Search, Users } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
@@ -27,6 +27,14 @@ const STATUS_TABS = [
 ] as const;
 
 export default function ClientsPage() {
+  return (
+    <Suspense fallback={<SkeletonTable rows={8} />}>
+      <ClientsPageContent />
+    </Suspense>
+  );
+}
+
+function ClientsPageContent() {
   const router = useRouter();
   const params = useSearchParams();
   const initialQ = params?.get('q') ?? '';
