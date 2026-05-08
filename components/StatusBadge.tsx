@@ -21,8 +21,8 @@ const map: Record<string, { tone: 'ok' | 'bad' | 'warn' | 'info' | 'neutral'; la
   // Action kinds (for log lists)
   DECISION_BLOCK: { tone: 'bad', label: 'Block' },
   DECISION_RESTORE: { tone: 'ok', label: 'Restore' },
-  GPSWOX_ENABLE: { tone: 'ok', label: 'GPSWOX enable' },
-  GPSWOX_DISABLE: { tone: 'bad', label: 'GPSWOX disable' },
+  GPSWOX_ENABLE: { tone: 'ok', label: 'ABC Track enable' },
+  GPSWOX_DISABLE: { tone: 'bad', label: 'ABC Track disable' },
   GPSWOX_UPDATE_EXPIRATION: { tone: 'info', label: 'Update expiry' },
   MANUAL_SYNC: { tone: 'info', label: 'Manual sync' },
 };

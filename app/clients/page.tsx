@@ -96,14 +96,14 @@ function ClientsPageContent() {
       </div>
 
       <Card className="overflow-hidden">
-        <div className="px-4 py-3 border-b border-border-subtle flex flex-wrap items-center gap-3">
+        <div className="px-4 py-3 border-b border-white/10 flex flex-wrap items-center gap-3">
           <div className="relative flex-1 min-w-[240px] max-w-sm">
             <Search className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint" />
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search by email or FreshBooks id"
-              className="w-full h-9 pl-9 pr-3 rounded-lg bg-bg-subtle border border-transparent hover:border-border focus:border-info/50 focus:bg-bg-panel text-sm placeholder:text-ink-faint focus-ring transition-colors"
+              className="w-full h-9 pl-9 pr-3 rounded-lg bg-bg-subtle border border-white/10 hover:border-white/20 focus:border-info/60 focus:bg-bg-panel text-sm text-ink placeholder:text-ink-faint focus-ring transition-colors"
             />
           </div>
           <div className="inline-flex items-center gap-1 p-1 bg-bg-subtle border border-border rounded-lg">
@@ -199,7 +199,7 @@ function ClientsPageContent() {
         )}
 
         {data && data.items.length > 0 && (
-          <div className="px-4 py-3 border-t border-border-subtle flex items-center justify-between gap-3 text-sm">
+          <div className="px-4 py-3 border-t border-white/10 flex items-center justify-between gap-3 text-sm">
             <div className="text-ink-muted tabular">
               {rangeStart.toLocaleString()}–{rangeEnd.toLocaleString()} of{' '}
               {total.toLocaleString()}
@@ -240,7 +240,7 @@ function SkeletonTable({ rows }: { rows: number }) {
   return (
     <div className="px-4 py-3">
       {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="flex items-center gap-4 py-3 border-b border-border-subtle last:border-0">
+        <div key={i} className="flex items-center gap-4 py-3 border-b border-white/10 last:border-0">
           <Skeleton className="h-3 w-48" />
           <Skeleton className="h-4 w-16 rounded-full" />
           <Skeleton className="h-3 w-20 ml-auto" />

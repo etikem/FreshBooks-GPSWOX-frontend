@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'FreshBooks ↔ GPSWOX · Admin',
+  title: 'FreshBooks ↔ ABC Track · Admin',
   description: 'Recurring billing → access control automation',
 };
 

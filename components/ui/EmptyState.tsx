@@ -51,7 +51,7 @@ export function ErrorState({
       {onRetry && (
         <button
           onClick={onRetry}
-          className="mt-4 inline-flex items-center h-8 px-3 rounded-lg bg-ink text-white text-xs font-medium hover:bg-ink/90 focus-ring"
+          className="mt-4 inline-flex items-center h-8 px-3 rounded-lg bg-info text-white text-xs font-medium hover:bg-info/90 shadow-glow focus-ring"
         >
           Try again
         </button>

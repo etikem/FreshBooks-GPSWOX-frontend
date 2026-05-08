@@ -152,9 +152,9 @@ function Overview({ c }: { c: NonNullable<ReturnType<typeof useClient>['data']> 
       <div className="flex items-center gap-2 mb-3">
         <StatusBadge status={c.status} />
         {c.gpswoxUserId ? (
-          <Badge tone="neutral">GPSWOX #{c.gpswoxUserId}</Badge>
+          <Badge tone="neutral">ABC Track #{c.gpswoxUserId}</Badge>
         ) : (
-          <Badge tone="warn">No GPSWOX user mapped</Badge>
+          <Badge tone="warn">No ABC Track user mapped</Badge>
         )}
       </div>
       <div className="grid grid-cols-2 gap-3">
@@ -225,6 +225,13 @@ function Stat({
   );
 }
 
+const INVOICE_STATUS_LABELS: Record<string, string> = {
+  '1': 'Draft',
+  '2': 'Sent',
+  '3': 'Viewed',
+  '4': 'Paid',
+};
+
 function InvoicesTable({
   invoices,
 }: {
@@ -242,6 +249,7 @@ function InvoicesTable({
           <TH align="right">Paid</TH>
           <TH align="right">Balance</TH>
           <TH>Status</TH>
+          <TH>Issued</TH>
           <TH>Due</TH>
         </TR>
       </THead>
@@ -263,9 +271,14 @@ function InvoicesTable({
                 {i.balance}
               </TD>
               <TD>
-                <Badge tone={balanceNum > 0 ? 'bad' : 'ok'}>{i.status}</Badge>
+                <Badge tone={balanceNum > 0 ? 'bad' : 'ok'}>
+                  {INVOICE_STATUS_LABELS[i.status] ?? i.status}
+                </Badge>
               </TD>
-              <TD className="text-ink-muted text-xs">
+              <TD className="text-ink-muted text-xs whitespace-nowrap">
+                {i.issuedDate?.slice(0, 10) ?? '—'}
+              </TD>
+              <TD className="text-ink-muted text-xs whitespace-nowrap">
                 {i.dueDate?.slice(0, 10) ?? '—'}
               </TD>
             </TR>

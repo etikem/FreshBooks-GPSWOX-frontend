@@ -25,7 +25,7 @@ export function Table({
 
 export function THead({ children }: { children: React.ReactNode }) {
   return (
-    <thead className="bg-bg-subtle text-ink-muted text-xs uppercase tracking-wide">
+    <thead className="bg-white/[0.03] text-ink-faint text-xs uppercase tracking-wide">
       {children}
     </thead>
   );
@@ -45,7 +45,7 @@ export function TR({
       onClick={onClick}
       className={cn(
         'group',
-        onClick && 'cursor-pointer hover:bg-bg-subtle/60 transition-colors',
+        onClick && 'cursor-pointer hover:bg-white/[0.04] transition-colors',
         className,
       )}
     >
@@ -66,7 +66,7 @@ export function TH({
   return (
     <th
       className={cn(
-        'px-4 py-2.5 font-medium border-b border-border text-ink-muted',
+        'px-4 py-2.5 font-medium border-b border-white/10 text-ink-faint',
         align === 'right' && 'text-right',
         align === 'center' && 'text-center',
         align === 'left' && 'text-left',
@@ -90,7 +90,7 @@ export function TD({
   return (
     <td
       className={cn(
-        'px-4 py-3 border-b border-border-subtle text-ink',
+        'px-4 py-3 border-b border-white/[0.06] text-ink',
         align === 'right' && 'text-right',
         align === 'center' && 'text-center',
         align === 'left' && 'text-left',

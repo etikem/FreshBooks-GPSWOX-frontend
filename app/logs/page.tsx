@@ -27,7 +27,7 @@ export default function LogsPage() {
       <div>
         <h1 className="text-xl font-semibold">Logs</h1>
         <p className="text-sm text-ink-muted">
-          Decisions, GPSWOX calls, and inbound webhooks. Auto-refreshing.
+          Decisions, ABC Track calls, and inbound webhooks. Auto-refreshing.
         </p>
       </div>
 

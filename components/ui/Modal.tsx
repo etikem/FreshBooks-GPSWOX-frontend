@@ -42,27 +42,27 @@ export function Modal({
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className="absolute inset-0 bg-ink/30 backdrop-blur-[2px] animate-fade-in"
+        className="absolute inset-0 bg-black/60 backdrop-blur-[2px] animate-fade-in"
         onClick={onClose}
       />
       <div
         role="dialog"
         aria-modal="true"
         className={cn(
-          'relative w-full bg-bg-panel border border-border rounded-xl shadow-pop animate-slide-in-up',
+          'relative w-full bg-bg-panel border border-white/10 rounded-xl shadow-pop animate-slide-in-up',
           widths[size],
         )}
       >
-        <header className="px-5 py-4 border-b border-border flex items-start justify-between gap-4">
+        <header className="px-5 py-4 border-b border-white/10 flex items-start justify-between gap-4">
           <div className="min-w-0">
-            {title && <div className="text-base font-semibold">{title}</div>}
+            {title && <div className="text-base font-semibold text-ink">{title}</div>}
             {description && (
               <div className="text-sm text-ink-muted mt-0.5">{description}</div>
             )}
           </div>
           <button
             onClick={onClose}
-            className="size-8 inline-flex items-center justify-center rounded-lg text-ink-muted hover:bg-bg-subtle hover:text-ink focus-ring"
+            className="size-8 inline-flex items-center justify-center rounded-lg text-ink-muted hover:bg-white/[0.06] hover:text-ink focus-ring"
             aria-label="Close"
           >
             <X className="size-4" />
@@ -70,7 +70,7 @@ export function Modal({
         </header>
         <div className="px-5 py-4">{children}</div>
         {footer && (
-          <div className="px-5 py-3 border-t border-border bg-bg-subtle/40 flex justify-end gap-2 rounded-b-xl">
+          <div className="px-5 py-3 border-t border-white/10 bg-bg-subtle/40 flex justify-end gap-2 rounded-b-xl">
             {footer}
           </div>
         )}

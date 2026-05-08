@@ -44,7 +44,7 @@ export function Topbar() {
   }
 
   return (
-    <header className="sticky top-0 z-30 h-14 bg-bg-panel/80 backdrop-blur border-b border-border flex items-center gap-4 px-5">
+    <header className="sticky top-0 z-30 h-14 bg-bg-panel/80 backdrop-blur border-b border-white/10 flex items-center gap-4 px-5">
       <div className="text-sm font-semibold text-ink">{title}</div>
       <div className="flex-1 max-w-md ml-4 hidden md:block">
         <div className="relative">
@@ -53,7 +53,7 @@ export function Topbar() {
             type="text"
             placeholder="Search clients by email or FreshBooks id…"
             onKeyDown={onSearchKey}
-            className="w-full h-9 pl-9 pr-3 rounded-lg bg-bg-subtle border border-transparent hover:border-border focus:border-info/50 focus:bg-bg-panel text-sm placeholder:text-ink-faint focus-ring transition-colors"
+            className="w-full h-9 pl-9 pr-3 rounded-lg bg-bg-subtle border border-white/10 hover:border-white/20 focus:border-info/60 focus:bg-bg-panel text-sm text-ink placeholder:text-ink-faint focus-ring transition-colors"
           />
         </div>
       </div>
@@ -61,9 +61,9 @@ export function Topbar() {
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setMenuOpen((v) => !v)}
-            className="flex items-center gap-2 h-9 pl-1.5 pr-2.5 rounded-lg hover:bg-bg-subtle focus-ring"
+            className="flex items-center gap-2 h-9 pl-1.5 pr-2.5 rounded-lg hover:bg-white/[0.05] focus-ring"
           >
-            <span className="size-7 rounded-full bg-info-surface text-info flex items-center justify-center text-xs font-semibold">
+            <span className="size-7 rounded-full bg-info/15 text-info ring-1 ring-info/30 flex items-center justify-center text-xs font-semibold">
               <User className="size-4" />
             </span>
             <span className="text-sm text-ink-muted hidden sm:block">Admin</span>
@@ -72,7 +72,7 @@ export function Topbar() {
             <div className="absolute right-0 mt-1 w-44 surface shadow-pop py-1 animate-slide-in-up">
               <button
                 onClick={logout}
-                className="flex items-center gap-2 w-full text-left px-3 h-9 text-sm text-ink hover:bg-bg-subtle"
+                className="flex items-center gap-2 w-full text-left px-3 h-9 text-sm text-ink hover:bg-white/[0.05]"
               >
                 <LogOut className="size-4 text-ink-faint" />
                 Sign out

@@ -69,7 +69,7 @@ export default function RetriesPage() {
       <div>
         <h1 className="text-xl font-semibold">Retries</h1>
         <p className="text-sm text-ink-muted">
-          Outbound GPSWOX calls that failed. Exhausted jobs need an operator.
+          Outbound ABC Track calls that failed. Exhausted jobs need an operator.
         </p>
       </div>
 
@@ -91,7 +91,7 @@ export default function RetriesPage() {
       </div>
 
       <Card className="overflow-hidden">
-        <div className="px-4 py-3 border-b border-border-subtle flex items-center gap-3">
+        <div className="px-4 py-3 border-b border-white/10 flex items-center gap-3">
           <div className="inline-flex items-center gap-1 p-1 bg-bg-subtle border border-border rounded-lg">
             {STATUS_TABS.map((t) => (
               <button
@@ -204,7 +204,7 @@ export default function RetriesPage() {
         }
       >
         <p className="text-sm text-ink-muted">
-          Cancelling does not revert any side-effects already pushed to GPSWOX.
+          Cancelling does not revert any side-effects already pushed to ABC Track.
         </p>
       </Modal>
     </div>

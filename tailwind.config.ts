@@ -8,36 +8,39 @@ const config: Config = {
         sans: ['var(--font-inter)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       colors: {
-        // Linear/Stripe-like neutral surface palette.
+        // Dark surface palette — matches /login (#050505 page, #0d0d0f panel,
+        // #161618 input, #1f8bff accent, white/10 hairlines).
         bg: {
-          DEFAULT: '#fafafa',
-          panel: '#ffffff',
-          subtle: '#f4f4f5',
+          DEFAULT: '#050505',
+          panel: '#0d0d0f',
+          subtle: '#161618',
         },
         border: {
-          DEFAULT: '#e4e4e7',
-          subtle: '#f1f1f3',
+          DEFAULT: '#1f1f24',
+          subtle: '#16161a',
         },
         ink: {
-          DEFAULT: '#0a0a0a',
-          muted: '#52525b',
-          subtle: '#71717a',
-          faint: '#a1a1aa',
+          DEFAULT: '#fafafa',
+          muted: '#a3a3ad',
+          subtle: '#86868f',
+          faint: '#6a6a73',
         },
-        // Status colors — pastel surface + saturated text/icon.
-        ok: { DEFAULT: '#16a34a', surface: '#ecfdf5', ring: '#86efac' },
-        bad: { DEFAULT: '#dc2626', surface: '#fef2f2', ring: '#fca5a5' },
-        warn: { DEFAULT: '#d97706', surface: '#fffbeb', ring: '#fcd34d' },
-        info: { DEFAULT: '#2563eb', surface: '#eff6ff', ring: '#93c5fd' },
+        // Status colors — saturated foreground over dark tinted surfaces.
+        ok: { DEFAULT: '#22c55e', surface: '#0f2a1c', ring: '#16a34a' },
+        bad: { DEFAULT: '#f87171', surface: '#2a0f12', ring: '#dc2626' },
+        warn: { DEFAULT: '#f59e0b', surface: '#2a1f0d', ring: '#92670a' },
+        info: { DEFAULT: '#1f8bff', surface: '#0c1f33', ring: '#1f8bff' },
       },
       borderRadius: {
         lg: '10px',
         xl: '14px',
+        '2xl': '18px',
       },
       boxShadow: {
-        soft: '0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06)',
-        pop: '0 8px 24px rgba(16, 24, 40, 0.08), 0 2px 6px rgba(16, 24, 40, 0.04)',
-        ring: '0 0 0 4px rgba(37, 99, 235, 0.12)',
+        soft: '0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25)',
+        pop: '0 12px 32px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.35)',
+        ring: '0 0 0 4px rgba(31, 139, 255, 0.20)',
+        glow: '0 4px 16px -4px rgba(31, 139, 255, 0.5)',
       },
       keyframes: {
         'fade-in': {
