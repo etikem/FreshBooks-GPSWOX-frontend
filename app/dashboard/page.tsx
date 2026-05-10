@@ -1,11 +1,15 @@
 'use client';
 
+import Link from 'next/link';
 import {
   Users,
   ShieldCheck,
   ShieldOff,
   RefreshCcw,
   AlertTriangle,
+  Ban,
+  Webhook,
+  Bug,
 } from 'lucide-react';
 import { Card, CardHeader, CardBody, CardTitle } from '@/components/ui/Card';
 import { KpiCard } from '@/components/KpiCard';
@@ -21,11 +25,13 @@ import {
   TH,
   TD,
 } from '@/components/ui/Table';
-import { useStats, useActionLogs } from '@/lib/hooks';
+import { useStats, useActionLogs, useNotifications } from '@/lib/hooks';
+import type { NotificationsResponse } from '@/lib/types';
 
 export default function DashboardPage() {
   const stats = useStats();
   const logs = useActionLogs();
+  const notifications = useNotifications();
 
   if (stats.error) {
     return <ErrorState message={(stats.error as Error).message} onRetry={() => stats.refetch()} />;
@@ -82,6 +88,50 @@ export default function DashboardPage() {
           }
         />
       </div>
+
+      {/* Action items — only render the card when there's something to act on. */}
+      {notifications.data && hasNotifications(notifications.data) && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Action items</CardTitle>
+            <span className="text-xs text-ink-faint">
+              Things that need an operator
+            </span>
+          </CardHeader>
+          <CardBody>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <NotificationTile
+                tone="neutral"
+                icon={<Ban className="size-4" />}
+                label="Cancelled"
+                count={notifications.data.cancelled.count}
+                href="/clients?status=CANCELLED"
+              />
+              <NotificationTile
+                tone="bad"
+                icon={<Webhook className="size-4" />}
+                label="Webhook failures"
+                count={notifications.data.webhookFailures.count}
+                href="/logs"
+              />
+              <NotificationTile
+                tone="bad"
+                icon={<RefreshCcw className="size-4" />}
+                label="Failed retries"
+                count={notifications.data.failedRetries.count}
+                href="/retries?status=FAILED"
+              />
+              <NotificationTile
+                tone="bad"
+                icon={<Bug className="size-4" />}
+                label="Sync errors"
+                count={notifications.data.recentSyncErrors.count}
+                href="/logs"
+              />
+            </div>
+          </CardBody>
+        </Card>
+      )}
 
       {/* Chart + recent syncs */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -199,4 +249,46 @@ export default function DashboardPage() {
 function pct(n: number, total: number): number {
   if (!total) return 0;
   return Math.round((n / total) * 100);
+}
+
+function hasNotifications(n: NotificationsResponse): boolean {
+  return (
+    n.cancelled.count > 0 ||
+    n.webhookFailures.count > 0 ||
+    n.failedRetries.count > 0 ||
+    n.recentSyncErrors.count > 0
+  );
+}
+
+function NotificationTile({
+  tone,
+  icon,
+  label,
+  count,
+  href,
+}: {
+  tone: 'warn' | 'bad' | 'neutral';
+  icon: React.ReactNode;
+  label: string;
+  count: number;
+  href: string;
+}) {
+  const toneClass =
+    tone === 'bad'
+      ? 'text-bad border-bad/30 bg-bad/5 hover:border-bad/50'
+      : tone === 'warn'
+      ? 'text-warn border-warn/30 bg-warn/5 hover:border-warn/50'
+      : 'text-ink border-border bg-bg-subtle hover:border-white/20';
+  return (
+    <Link
+      href={href}
+      className={`surface p-3 flex items-center gap-3 transition-colors border ${toneClass}`}
+    >
+      <span className="opacity-80">{icon}</span>
+      <div className="flex-1 min-w-0">
+        <div className="text-xs text-ink-faint">{label}</div>
+        <div className="text-lg font-semibold tabular">{count}</div>
+      </div>
+    </Link>
+  );
 }

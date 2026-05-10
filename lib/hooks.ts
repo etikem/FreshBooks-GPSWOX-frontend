@@ -13,10 +13,13 @@ import type {
   ActionLogItem,
   WebhookEventItem,
   RetryJobItem,
+  ClientStatus,
+  NotificationsResponse,
 } from './types';
 
 export const qk = {
   stats: ['stats'] as const,
+  notifications: ['notifications'] as const,
   clients: (q?: string, status?: string, page?: number, pageSize?: number) =>
     ['clients', { q, status, page, pageSize }] as const,
   client: (id: string) => ['client', id] as const,
@@ -29,6 +32,14 @@ export function useStats() {
   return useQuery({
     queryKey: qk.stats,
     queryFn: () => api<Stats>('/stats'),
+    refetchInterval: 30_000,
+  });
+}
+
+export function useNotifications() {
+  return useQuery({
+    queryKey: qk.notifications,
+    queryFn: () => api<NotificationsResponse>('/notifications'),
     refetchInterval: 30_000,
   });
 }
@@ -75,6 +86,27 @@ export function useManualSync() {
     onSuccess: (_, clientId) => {
       qc.invalidateQueries({ queryKey: qk.client(clientId) });
       qc.invalidateQueries({ queryKey: qk.stats });
+      qc.invalidateQueries({ queryKey: ['clients'] });
+    },
+  });
+}
+
+export interface PatchClientInput {
+  contractStartDate?: string;
+  contractEndDate?: string;
+  status?: ClientStatus;
+}
+
+export function usePatchClient() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, body }: { id: string; body: PatchClientInput }) =>
+      api(`/clients/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(body),
+      }),
+    onSuccess: (_, { id }) => {
+      qc.invalidateQueries({ queryKey: qk.client(id) });
       qc.invalidateQueries({ queryKey: ['clients'] });
     },
   });

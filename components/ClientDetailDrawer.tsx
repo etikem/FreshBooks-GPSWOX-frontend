@@ -7,6 +7,12 @@ import {
   Cpu,
   Wallet,
   CalendarDays,
+  Phone,
+  MapPin,
+  Building2,
+  Globe,
+  Receipt,
+  StickyNote,
 } from 'lucide-react';
 import { Drawer } from './ui/Drawer';
 import { Button } from './ui/Button';
@@ -45,7 +51,10 @@ export function ClientDetailDrawer({
     if (!clientId) return;
     try {
       await sync.mutateAsync(clientId);
-      toast.success('Manual sync triggered', 'We refetched FreshBooks and applied the decision.');
+      toast.success(
+        'Manual sync triggered',
+        'We refetched FreshBooks and applied the decision.',
+      );
     } catch (e) {
       toast.error('Manual sync failed', (e as Error).message);
     }
@@ -62,10 +71,9 @@ export function ClientDetailDrawer({
         c ? (
           <div className="flex items-center justify-between">
             <span className="text-xs text-ink-faint">
-              Last synced{' '}
-              {c?.invoices?.length
-                ? new Date(c.invoices[0]?.id ? Date.now() : Date.now()).toLocaleString()
-                : '—'}
+              {c.lastSyncedAt
+                ? `Last synced ${new Date(c.lastSyncedAt).toLocaleString()}`
+                : 'Never synced'}
             </span>
             <Button
               variant="primary"
@@ -97,6 +105,7 @@ export function ClientDetailDrawer({
       ) : !c ? null : (
         <div className="p-5 space-y-5">
           <Overview c={c} />
+          <ProfilePanel c={c} />
           <Tabs defaultValue="invoices">
             <TabsList>
               <TabsTrigger value="invoices" count={c.invoices.length}>
@@ -195,6 +204,127 @@ function Overview({ c }: { c: NonNullable<ReturnType<typeof useClient>['data']> 
   );
 }
 
+/**
+ * FreshBooks profile pulled from /users/clients/<id> on the client.* webhook.
+ * Renders nothing when none of the fields are populated — keeps the drawer
+ * tidy for clients that pre-date the profile-fetch wiring.
+ */
+function ProfilePanel({
+  c,
+}: {
+  c: NonNullable<ReturnType<typeof useClient>['data']>;
+}) {
+  const fullName = [c.firstName, c.lastName].filter(Boolean).join(' ').trim();
+  const addressLines = [
+    c.addressStreet,
+    c.addressStreet2,
+    [c.addressCity, c.addressProvince, c.addressCode].filter(Boolean).join(', '),
+    c.addressCountry,
+  ].filter((v) => v && v.length > 0) as string[];
+
+  const rows: Array<{ icon: React.ReactNode; label: string; value: React.ReactNode }> = [];
+  if (fullName || c.organization) {
+    rows.push({
+      icon: <Building2 className="size-4" />,
+      label: 'Name',
+      value: (
+        <div className="space-y-0.5">
+          {fullName && <div>{fullName}</div>}
+          {c.organization && (
+            <div className="text-ink-muted text-xs">{c.organization}</div>
+          )}
+        </div>
+      ),
+    });
+  }
+  const phones = [
+    c.businessPhone && { tag: 'Business', value: c.businessPhone },
+    c.mobilePhone && { tag: 'Mobile', value: c.mobilePhone },
+    c.homePhone && { tag: 'Home', value: c.homePhone },
+  ].filter(Boolean) as Array<{ tag: string; value: string }>;
+  if (phones.length > 0) {
+    rows.push({
+      icon: <Phone className="size-4" />,
+      label: 'Phone',
+      value: (
+        <div className="space-y-0.5">
+          {phones.map((p) => (
+            <div key={p.tag} className="font-mono text-xs">
+              <span className="text-ink-faint mr-2">{p.tag}</span>
+              {p.value}
+            </div>
+          ))}
+        </div>
+      ),
+    });
+  }
+  if (addressLines.length > 0) {
+    rows.push({
+      icon: <MapPin className="size-4" />,
+      label: 'Address',
+      value: (
+        <div className="space-y-0.5 text-xs">
+          {addressLines.map((line, i) => (
+            <div key={i}>{line}</div>
+          ))}
+        </div>
+      ),
+    });
+  }
+  if (c.currencyCode || c.language) {
+    rows.push({
+      icon: <Globe className="size-4" />,
+      label: 'Locale',
+      value: (
+        <div className="space-x-2 text-xs">
+          {c.currencyCode && <span>{c.currencyCode}</span>}
+          {c.language && <span className="text-ink-muted">{c.language}</span>}
+        </div>
+      ),
+    });
+  }
+  if (c.vatNumber || c.vatName) {
+    rows.push({
+      icon: <Receipt className="size-4" />,
+      label: 'VAT',
+      value: (
+        <div className="space-y-0.5 text-xs">
+          {c.vatNumber && <div className="font-mono">{c.vatNumber}</div>}
+          {c.vatName && <div className="text-ink-muted">{c.vatName}</div>}
+        </div>
+      ),
+    });
+  }
+  if (c.notes) {
+    rows.push({
+      icon: <StickyNote className="size-4" />,
+      label: 'Notes',
+      value: (
+        <div className="text-xs whitespace-pre-wrap text-ink-muted">{c.notes}</div>
+      ),
+    });
+  }
+
+  if (rows.length === 0) return null;
+
+  return (
+    <div className="surface p-4 space-y-3">
+      <div className="text-sm font-medium text-ink">Profile</div>
+      <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+        {rows.map((r, i) => (
+          <div key={i} className="contents">
+            <dt className="flex items-center gap-1.5 text-ink-faint text-xs">
+              {r.icon}
+              {r.label}
+            </dt>
+            <dd className="text-ink min-w-0">{r.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  );
+}
+
 function Stat({
   icon,
   label,
@@ -256,8 +386,12 @@ function InvoicesTable({
       <tbody>
         {invoices.map((i) => {
           const balanceNum = parseFloat(i.balance);
+          const voided = i.active === false;
           return (
-            <TR key={i.id}>
+            <TR
+              key={i.id}
+              className={cn(voided && 'opacity-50 line-through decoration-ink-faint/60')}
+            >
               <TD className="font-mono text-xs">{i.invoiceNumber ?? i.id}</TD>
               <TD align="right" className="tabular">{i.amount}</TD>
               <TD align="right" className="tabular text-ink-muted">{i.paid}</TD>
@@ -265,15 +399,23 @@ function InvoicesTable({
                 align="right"
                 className={cn(
                   'tabular font-medium',
-                  balanceNum > 0 ? 'text-bad' : 'text-ok',
+                  voided
+                    ? 'text-ink-faint'
+                    : balanceNum > 0
+                    ? 'text-bad'
+                    : 'text-ok',
                 )}
               >
                 {i.balance}
               </TD>
               <TD>
-                <Badge tone={balanceNum > 0 ? 'bad' : 'ok'}>
-                  {INVOICE_STATUS_LABELS[i.status] ?? i.status}
-                </Badge>
+                {voided ? (
+                  <Badge tone="neutral">Voided</Badge>
+                ) : (
+                  <Badge tone={balanceNum > 0 ? 'bad' : 'ok'}>
+                    {INVOICE_STATUS_LABELS[i.status] ?? i.status}
+                  </Badge>
+                )}
               </TD>
               <TD className="text-ink-muted text-xs whitespace-nowrap">
                 {i.issuedDate?.slice(0, 10) ?? '—'}

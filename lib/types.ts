@@ -1,4 +1,8 @@
-export type ClientStatus = 'ACTIVE' | 'BLOCKED' | 'CANCELLED' | 'UNKNOWN';
+export type ClientStatus =
+  | 'ACTIVE'
+  | 'BLOCKED'
+  | 'CANCELLED'
+  | 'UNKNOWN';
 export type RetryStatus =
   | 'PENDING'
   | 'RUNNING'
@@ -12,6 +16,7 @@ export type ActionKind =
   | 'GPSWOX_ENABLE'
   | 'GPSWOX_DISABLE'
   | 'GPSWOX_UPDATE_EXPIRATION'
+  | 'GPSWOX_MATCHED'
   | 'ERROR'
   | 'MANUAL_SYNC';
 
@@ -37,6 +42,7 @@ export interface ClientListItem {
   lastOutstanding: string | null;
   paidThroughDate: string | null;
   accessExpiresAt: string | null;
+  lastSyncedAt: string | null;
   freshbooksClientId: string;
   updatedAt: string;
 }
@@ -45,6 +51,24 @@ export interface ClientDetail extends ClientListItem {
   gpswoxUserId: string | null;
   contractStartDate: string;
   contractEndDate: string;
+  // Profile fields populated from /users/clients/<id> on client.* webhooks.
+  firstName: string | null;
+  lastName: string | null;
+  organization: string | null;
+  businessPhone: string | null;
+  mobilePhone: string | null;
+  homePhone: string | null;
+  addressStreet: string | null;
+  addressStreet2: string | null;
+  addressCity: string | null;
+  addressProvince: string | null;
+  addressCountry: string | null;
+  addressCode: string | null;
+  currencyCode: string | null;
+  language: string | null;
+  vatName: string | null;
+  vatNumber: string | null;
+  notes: string | null;
   invoices: Array<{
     id: string;
     invoiceNumber: string | null;
@@ -55,6 +79,8 @@ export interface ClientDetail extends ClientListItem {
     status: string;
     dueDate: string | null;
     issuedDate: string | null;
+    active: boolean;
+    voidedAt: string | null;
   }>;
   actionLogs: Array<{
     id: string;
@@ -110,4 +136,45 @@ export interface RetryJobItem {
   nextAttemptAt: string;
   lastError: string | null;
   client?: { id: string; email: string } | null;
+}
+
+export interface NotificationsResponse {
+  cancelled: {
+    count: number;
+    sample: Array<{
+      id: string;
+      email: string;
+      name: string | null;
+      lastSyncedAt: string | null;
+    }>;
+  };
+  webhookFailures: {
+    count: number;
+    sample: Array<{
+      id: string;
+      eventType: string;
+      eventId: string;
+      failureReason: string | null;
+      receivedAt: string;
+    }>;
+  };
+  failedRetries: {
+    count: number;
+    sample: Array<{
+      id: string;
+      operation: string;
+      lastError: string | null;
+      updatedAt: string;
+      client?: { id: string; email: string } | null;
+    }>;
+  };
+  recentSyncErrors: {
+    count: number;
+    sample: Array<{
+      id: string;
+      notes: string | null;
+      startedAt: string;
+      client?: { id: string; email: string } | null;
+    }>;
+  };
 }

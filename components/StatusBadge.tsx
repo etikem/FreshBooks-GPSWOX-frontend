@@ -24,6 +24,7 @@ const map: Record<string, { tone: 'ok' | 'bad' | 'warn' | 'info' | 'neutral'; la
   GPSWOX_ENABLE: { tone: 'ok', label: 'ABC Track enable' },
   GPSWOX_DISABLE: { tone: 'bad', label: 'ABC Track disable' },
   GPSWOX_UPDATE_EXPIRATION: { tone: 'info', label: 'Update expiry' },
+  GPSWOX_MATCHED: { tone: 'info', label: 'ABC Track matched' },
   MANUAL_SYNC: { tone: 'info', label: 'Manual sync' },
 };
 
