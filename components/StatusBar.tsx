@@ -1,8 +1,11 @@
 import { cn } from '@/lib/cn';
 
 /**
- * Stacked horizontal bar that summarises Active vs Blocked clients.
- * SVG-free, just styled divs — keeps bundle small and renders crisply.
+ * Stacked horizontal bar that summarises Active vs Disabled clients.
+ * Internal prop name stays `blocked` to match the backend totals API;
+ * the display label is "Disabled" so the UI matches ABC Track's
+ * terminology. SVG-free, just styled divs — keeps bundle small and
+ * renders crisply.
  */
 export function StatusBar({
   active,
@@ -20,7 +23,7 @@ export function StatusBar({
     <div>
       <div className="flex items-center gap-3 text-xs text-ink-muted mb-2">
         <Legend dot="bg-ok" label={`Active · ${active}`} />
-        <Legend dot="bg-bad" label={`Blocked · ${blocked}`} />
+        <Legend dot="bg-bad" label={`Disabled · ${blocked}`} />
         {unknown > 0 && <Legend dot="bg-warn" label={`Unknown · ${unknown}`} />}
         <span className="ml-auto tabular text-ink-faint">{total} total</span>
       </div>
@@ -31,7 +34,7 @@ export function StatusBar({
       </div>
       <div className="grid grid-cols-3 gap-3 mt-4 text-sm">
         <Stat label="Active" value={active} pct={pct(active)} tone="ok" />
-        <Stat label="Blocked" value={blocked} pct={pct(blocked)} tone="bad" />
+        <Stat label="Disabled" value={blocked} pct={pct(blocked)} tone="bad" />
         <Stat label="Unknown" value={unknown} pct={pct(unknown)} tone="warn" />
       </div>
     </div>

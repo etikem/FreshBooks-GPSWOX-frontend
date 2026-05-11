@@ -64,7 +64,7 @@ export default function DashboardPage() {
           }
         />
         <KpiCard
-          label="Blocked"
+          label="Disabled"
           value={totals?.blocked ?? 0}
           icon={ShieldOff}
           tone="bad"

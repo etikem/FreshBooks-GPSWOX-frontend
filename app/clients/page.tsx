@@ -22,7 +22,7 @@ import { cn } from '@/lib/cn';
 const STATUS_TABS = [
   { value: '', label: 'All' },
   { value: 'ACTIVE', label: 'Active' },
-  { value: 'BLOCKED', label: 'Blocked' },
+  { value: 'BLOCKED', label: 'Disabled' },
   { value: 'UNKNOWN', label: 'Unknown' },
 ] as const;
 

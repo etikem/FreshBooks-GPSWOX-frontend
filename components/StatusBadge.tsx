@@ -3,7 +3,9 @@ import { Badge } from './ui/Badge';
 const map: Record<string, { tone: 'ok' | 'bad' | 'warn' | 'info' | 'neutral'; label?: string; dot?: boolean }> = {
   // Client status
   ACTIVE: { tone: 'ok', dot: true },
-  BLOCKED: { tone: 'bad', dot: true },
+  // Label is "Disabled" (not the internal "Blocked") so the dashboard
+  // matches the terminology used by ABC Track admin UI.
+  BLOCKED: { tone: 'bad', dot: true, label: 'Disabled' },
   CANCELLED: { tone: 'neutral' },
   UNKNOWN: { tone: 'warn', dot: true },
 
