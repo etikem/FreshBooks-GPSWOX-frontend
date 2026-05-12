@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { usePathname } from 'next/navigation';
 import { X } from 'lucide-react';
@@ -14,6 +14,10 @@ export function MobileNav({
   onClose: () => void;
 }) {
   const path = usePathname();
+  // Defer the portal until after hydration so SSR + first client render
+  // both produce null (matching tree), avoiding a hydration mismatch.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   // Close on route change (covers Next.js Link clicks even if onNavigate isn't fired).
   useEffect(() => {
@@ -36,7 +40,7 @@ export function MobileNav({
     };
   }, [open, onClose]);
 
-  if (typeof document === 'undefined') return null;
+  if (!mounted) return null;
 
   return createPortal(
     <div
