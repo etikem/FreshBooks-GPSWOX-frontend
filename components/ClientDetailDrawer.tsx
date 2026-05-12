@@ -29,7 +29,7 @@ import { Badge } from './ui/Badge';
 import { Skeleton, SkeletonText } from './ui/Skeleton';
 import { EmptyState, ErrorState } from './ui/EmptyState';
 import { ActivityFeed } from './ActivityFeed';
-import { useClient, useManualSync } from '@/lib/hooks';
+import { useClient, useManualSync, usePatchClient } from '@/lib/hooks';
 import { useToast } from './ui/Toast';
 import { cn } from '@/lib/cn';
 
@@ -152,14 +152,31 @@ export function ClientDetailDrawer({
 }
 
 function Overview({ c }: { c: NonNullable<ReturnType<typeof useClient>['data']> }) {
-  const outstanding = c.lastOutstanding ?? '—';
-  const outstandingTone =
-    c.lastOutstanding && parseFloat(c.lastOutstanding) > 0 ? 'bad' : 'ok';
+  const patch = usePatchClient();
+  const toast = useToast();
+
+  const toggleUnlimited = async () => {
+    try {
+      await patch.mutateAsync({
+        id: c.id,
+        body: { isUnlimited: !c.isUnlimited },
+      });
+      toast.success(
+        c.isUnlimited ? 'Unlimited disabled' : 'Unlimited enabled',
+        c.isUnlimited
+          ? 'Client now follows the normal payment-driven billing rules.'
+          : 'Client is held ACTIVE in ABC Track regardless of payment state.',
+      );
+    } catch (e) {
+      toast.error('Could not update', (e as Error).message);
+    }
+  };
 
   return (
     <div>
-      <div className="flex items-center gap-2 mb-3">
+      <div className="flex items-center gap-2 mb-3 flex-wrap">
         <StatusBadge status={c.status} />
+        {c.isUnlimited && <Badge tone="ok">Unlimited</Badge>}
         {c.gpswoxUserId ? (
           <Badge tone="neutral">ABC Track #{c.gpswoxUserId}</Badge>
         ) : (
@@ -169,19 +186,19 @@ function Overview({ c }: { c: NonNullable<ReturnType<typeof useClient>['data']> 
       <div className="grid grid-cols-2 gap-3">
         <Stat
           icon={<Wallet className="size-4" />}
-          label="Outstanding"
-          value={outstanding}
-          tone={outstandingTone}
+          label="Last payment"
+          value={c.lastPaymentAt?.slice(0, 10) ?? '—'}
         />
         <Stat
           icon={<CalendarClock className="size-4" />}
-          label="Paid through"
-          value={c.paidThroughDate?.slice(0, 10) ?? '—'}
+          label="Access expires"
+          value={c.isUnlimited ? 'Unlimited' : c.accessExpiresAt?.slice(0, 10) ?? '—'}
+          tone={c.isUnlimited ? 'ok' : undefined}
         />
         <Stat
           icon={<CalendarDays className="size-4" />}
-          label="Access expires"
-          value={c.accessExpiresAt?.slice(0, 10) ?? '—'}
+          label="Contract"
+          value={`${c.contractStartDate.slice(0, 10)} → ${c.contractEndDate.slice(0, 10)}`}
         />
         <Stat
           icon={<Hash className="size-4" />}
@@ -196,9 +213,26 @@ function Overview({ c }: { c: NonNullable<ReturnType<typeof useClient>['data']> 
         />
         <Stat
           icon={<Cpu className="size-4" />}
-          label="Contract"
-          value={`${c.contractStartDate.slice(0, 10)} → ${c.contractEndDate.slice(0, 10)}`}
+          label="ABC Track user"
+          value={c.gpswoxUserId ?? 'unmapped'}
+          mono
         />
+      </div>
+      <div className="mt-3 flex items-center justify-between rounded border border-white/10 px-3 py-2 text-sm">
+        <div>
+          <div className="font-medium text-ink">Unlimited account</div>
+          <div className="text-xs text-ink-faint">
+            Bypass billing automation — held ACTIVE with no ABC Track expiration.
+          </div>
+        </div>
+        <Button
+          size="sm"
+          variant={c.isUnlimited ? 'secondary' : 'primary'}
+          loading={patch.isPending}
+          onClick={toggleUnlimited}
+        >
+          {c.isUnlimited ? 'Disable' : 'Enable'}
+        </Button>
       </div>
     </div>
   );

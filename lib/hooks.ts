@@ -95,6 +95,7 @@ export interface PatchClientInput {
   contractStartDate?: string;
   contractEndDate?: string;
   status?: ClientStatus;
+  isUnlimited?: boolean;
 }
 
 export function usePatchClient() {

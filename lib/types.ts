@@ -39,9 +39,16 @@ export interface ClientListItem {
   email: string;
   name: string | null;
   status: ClientStatus;
+  /** Legacy — no longer written by the access engine, kept for historical display. */
   lastOutstanding: string | null;
+  /** Legacy — no longer written by the access engine, kept for historical display. */
   paidThroughDate: string | null;
   accessExpiresAt: string | null;
+  // Most recent successful payment we've observed for this client.
+  lastPaymentAt: string | null;
+  // Manual-override flag — when true, access is held ACTIVE with no
+  // expiration in ABC Track regardless of payment state.
+  isUnlimited: boolean;
   lastSyncedAt: string | null;
   freshbooksClientId: string;
   updatedAt: string;

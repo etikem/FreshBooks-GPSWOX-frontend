@@ -143,22 +143,23 @@ function ClientsPageContent() {
               <TR>
                 <TH>Client</TH>
                 <TH>Status</TH>
-                <TH align="right">Outstanding</TH>
-                <TH>Paid through</TH>
+                <TH>Last payment</TH>
                 <TH>Access expires</TH>
                 <TH>FreshBooks id</TH>
               </TR>
             </THead>
             <tbody>
               {data?.items.map((c) => {
-                const outstanding = c.lastOutstanding
-                  ? parseFloat(c.lastOutstanding)
-                  : null;
                 return (
                   <TR key={c.id} onClick={() => openClient(c.id)}>
                     <TD>
-                      <div className="font-medium text-ink truncate max-w-[280px]">
-                        {c.email}
+                      <div className="font-medium text-ink truncate max-w-[280px] flex items-center gap-2">
+                        <span className="truncate">{c.email}</span>
+                        {c.isUnlimited && (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-ok/15 text-ok shrink-0">
+                            UNLIMITED
+                          </span>
+                        )}
                       </div>
                       {c.name && (
                         <div className="text-xs text-ink-faint truncate max-w-[280px]">
@@ -169,24 +170,13 @@ function ClientsPageContent() {
                     <TD>
                       <StatusBadge status={c.status} />
                     </TD>
-                    <TD
-                      align="right"
-                      className={cn(
-                        'tabular font-medium',
-                        outstanding === null
-                          ? 'text-ink-faint'
-                          : outstanding > 0
-                          ? 'text-bad'
-                          : 'text-ok',
-                      )}
-                    >
-                      {c.lastOutstanding ?? '—'}
+                    <TD className="text-ink-muted">
+                      {c.lastPaymentAt?.slice(0, 10) ?? '—'}
                     </TD>
                     <TD className="text-ink-muted">
-                      {c.paidThroughDate?.slice(0, 10) ?? '—'}
-                    </TD>
-                    <TD className="text-ink-muted">
-                      {c.accessExpiresAt?.slice(0, 10) ?? '—'}
+                      {c.isUnlimited
+                        ? 'Unlimited'
+                        : c.accessExpiresAt?.slice(0, 10) ?? '—'}
                     </TD>
                     <TD className="text-ink-faint font-mono text-xs">
                       {c.freshbooksClientId}
