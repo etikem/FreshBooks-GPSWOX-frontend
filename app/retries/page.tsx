@@ -91,7 +91,7 @@ export default function RetriesPage() {
       </div>
 
       <Card className="overflow-hidden">
-        <div className="px-4 py-3 border-b border-white/10 flex items-center gap-3">
+        <div className="px-4 py-3 border-b border-border flex items-center gap-3">
           <div className="inline-flex items-center gap-1 p-1 bg-bg-subtle border border-border rounded-lg">
             {STATUS_TABS.map((t) => (
               <button

@@ -80,7 +80,7 @@ function FeedRow({ item, last }: { item: ActivityItem; last: boolean }) {
           <Icon className="size-3.5" />
         </span>
         {!last && (
-          <span className="flex-1 w-px bg-white/10 mt-1 mb-[-12px]" />
+          <span className="flex-1 w-px bg-border mt-1 mb-[-12px]" />
         )}
       </div>
       <div className="flex-1 min-w-0 pt-0.5">

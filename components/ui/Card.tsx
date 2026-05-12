@@ -8,7 +8,7 @@ export function Card({
   return (
     <div
       className={cn(
-        'bg-bg-panel border border-white/10 rounded-xl shadow-soft',
+        'bg-bg-panel border border-border rounded-xl shadow-soft',
         className,
       )}
       {...rest}
@@ -26,7 +26,7 @@ export function CardHeader({
   return (
     <div
       className={cn(
-        'px-5 py-4 border-b border-white/10 flex items-center justify-between',
+        'px-5 py-4 border-b border-border flex items-center justify-between',
         className,
       )}
       {...rest}

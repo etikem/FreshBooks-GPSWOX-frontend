@@ -9,9 +9,9 @@ const variants: Record<Variant, string> = {
   primary:
     'bg-info text-white hover:bg-info/90 active:bg-info border border-info shadow-glow',
   secondary:
-    'bg-bg-subtle text-ink border border-white/10 hover:bg-white/[0.06] hover:border-white/20 active:bg-bg-subtle',
+    'bg-bg-subtle text-ink border border-border hover:border-info/40 hover-overlay-1 active:bg-bg-subtle',
   ghost:
-    'bg-transparent text-ink-muted hover:text-ink hover:bg-white/[0.05] border border-transparent',
+    'bg-transparent text-ink-muted hover:text-ink hover-overlay-1 border border-transparent',
   danger:
     'bg-bad text-white hover:bg-bad/90 border border-bad shadow-soft',
 };

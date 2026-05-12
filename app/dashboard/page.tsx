@@ -278,7 +278,7 @@ function NotificationTile({
       ? 'text-bad border-bad/30 bg-bad/5 hover:border-bad/50'
       : tone === 'warn'
       ? 'text-warn border-warn/30 bg-warn/5 hover:border-warn/50'
-      : 'text-ink border-border bg-bg-subtle hover:border-white/20';
+      : 'text-ink border-border bg-bg-subtle hover:border-info/40';
   return (
     <Link
       href={href}

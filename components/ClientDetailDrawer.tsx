@@ -218,7 +218,7 @@ function Overview({ c }: { c: NonNullable<ReturnType<typeof useClient>['data']> 
           mono
         />
       </div>
-      <div className="mt-3 flex items-center justify-between rounded border border-white/10 px-3 py-2 text-sm">
+      <div className="mt-3 flex items-center justify-between rounded border border-border px-3 py-2 text-sm">
         <div>
           <div className="font-medium text-ink">Unlimited account</div>
           <div className="text-xs text-ink-faint">

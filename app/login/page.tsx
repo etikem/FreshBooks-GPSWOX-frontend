@@ -31,11 +31,11 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#050505] text-white flex items-center justify-center p-6">
+    <div className="relative min-h-screen overflow-hidden bg-bg-sidebar text-ink-onSidebar flex items-center justify-center p-6">
       <CircuitDecorations />
 
       <div className="relative z-10 w-full max-w-md">
-        <div className="rounded-2xl border border-white/10 bg-[#0d0d0f]/90 backdrop-blur-sm shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] px-8 py-9">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm shadow-pop px-8 py-9">
           <div className="flex justify-center">
             <Logo />
           </div>
@@ -43,7 +43,7 @@ export default function LoginPage() {
           <h1 className="mt-5 text-center text-2xl font-semibold tracking-tight">
             Welcome Back
           </h1>
-          <p className="mt-2 text-center text-xs text-white/60">
+          <p className="mt-2 text-center text-xs text-ink-onSidebarMuted">
             Sign in with your admin credentials.
           </p>
 
@@ -66,7 +66,7 @@ export default function LoginPage() {
             />
 
             {err && (
-              <div className="flex items-start gap-2 text-xs text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2">
+              <div className="flex items-start gap-2 text-xs text-bad bg-bad/10 border border-bad/30 rounded-lg px-3 py-2">
                 <AlertTriangle className="size-4 mt-0.5 shrink-0" />
                 <span>{err}</span>
               </div>
@@ -75,14 +75,14 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={busy}
-              className="w-full h-11 rounded-lg bg-[#1f8bff] hover:bg-[#1a7ce8] active:bg-[#176fcf] text-white text-sm font-medium transition-colors disabled:opacity-60 disabled:cursor-not-allowed shadow-[0_4px_16px_-4px_rgba(31,139,255,0.5)]"
+              className="w-full h-11 rounded-lg bg-info hover:bg-info/90 active:bg-info/85 text-white text-sm font-medium transition-colors disabled:opacity-60 disabled:cursor-not-allowed shadow-glow"
             >
               {busy ? 'Signing in…' : 'Login'}
             </button>
           </form>
         </div>
 
-        <p className="mt-4 text-center text-[11px] text-white/40">
+        <p className="mt-4 text-center text-[11px] text-ink-onSidebarMuted/70">
           Protected by JWT · session expires in 12h
         </p>
       </div>
@@ -107,7 +107,7 @@ function InputField({
 }) {
   return (
     <div className="relative">
-      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/40">
+      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-onSidebarMuted">
         {icon}
       </span>
       <input
@@ -117,7 +117,7 @@ function InputField({
         onChange={(e) => onChange(e.target.value)}
         autoComplete={autoComplete}
         required
-        className="w-full h-11 pl-10 pr-3 rounded-lg bg-[#161618] border border-white/10 text-sm text-white placeholder:text-white/40 outline-none focus:border-[#1f8bff]/60 focus:ring-2 focus:ring-[#1f8bff]/20 transition-colors"
+        className="w-full h-11 pl-10 pr-3 rounded-lg bg-white/[0.04] border border-white/10 text-sm text-ink-onSidebar placeholder:text-ink-onSidebarMuted outline-none focus:border-info/60 focus:ring-2 focus:ring-info/20 transition-colors"
       />
     </div>
   );
@@ -125,7 +125,7 @@ function InputField({
 
 function Logo() {
   return (
-    <div className="size-11 rounded-xl bg-[#161618] border border-white/10 flex items-center justify-center">
+    <div className="size-11 rounded-xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
       <svg
         width="22"
         height="22"
@@ -190,7 +190,7 @@ function CircuitCorner({
           width="56"
           height="32"
           rx="3"
-          fill="#0d0d0f"
+          fill="rgba(255,255,255,0.04)"
           stroke="rgba(255,255,255,0.18)"
           strokeWidth="1"
         />

@@ -2,60 +2,156 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Tokens ────────────────────────────────────────────────────────── */
+/* Dark = default. Light is opt-in via [data-theme="light"] on <html>.
+   Sidebar tokens stay dark in both modes (PowerPixel pattern). */
 @layer base {
-  :root {
+  :root,
+  [data-theme='dark'] {
     color-scheme: dark;
+
+    /* Surfaces */
+    --color-bg: 26 32 64;            /* #1a2040 – page background (deep navy) */
+    --color-bg-panel: 37 43 74;      /* #252b4a – cards, popovers */
+    --color-bg-subtle: 45 51 88;     /* #2d3358 – inputs, secondary surfaces */
+    --color-bg-sidebar: 22 27 53;    /* #161b35 – sidebar */
+    --color-bg-topbar: 26 32 64;     /* same as page in dark */
+
+    /* Borders */
+    --color-border: 56 64 102;       /* #384066 – low-contrast hairlines */
+    --color-border-subtle: 45 51 88; /* #2d3358 */
+
+    /* Text */
+    --color-ink: 255 255 255;
+    --color-ink-muted: 160 168 192;  /* #a0a8c0 */
+    --color-ink-subtle: 130 139 166; /* #828ba6 */
+    --color-ink-faint: 95 105 137;   /* #5f6989 */
+    --color-ink-on-sidebar: 235 238 248;
+    --color-ink-on-sidebar-muted: 130 139 166;
+
+    /* Status — coral primary accent (replaces the old blue) */
+    --color-accent: 255 92 117;      /* #ff5c75 – coral/pink primary */
+    --color-accent-surface: 58 35 66;
+    --color-accent-ring: 220 65 90;
+
+    --color-ok: 74 222 128;          /* #4ade80 */
+    --color-ok-surface: 15 42 28;
+    --color-ok-ring: 22 163 74;
+
+    --color-bad: 248 113 113;        /* #f87171 */
+    --color-bad-surface: 58 21 32;
+    --color-bad-ring: 220 38 38;
+
+    --color-warn: 251 191 36;        /* #fbbf24 */
+    --color-warn-surface: 56 41 18;
+    --color-warn-ring: 146 103 10;
+
+    --shadow-soft: 0 1px 2px rgba(0,0,0,.35), 0 1px 3px rgba(0,0,0,.25);
+    --shadow-pop: 0 12px 32px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.35);
+
+    /* Adaptive overlay colors (used by hover states, header bg tints, etc.) */
+    --overlay-1: 255 255 255;        /* white tint on dark */
+    --overlay-1-alpha: 0.04;
+    --overlay-2-alpha: 0.06;
+    --overlay-3-alpha: 0.10;
   }
+
+  [data-theme='light'] {
+    color-scheme: light;
+
+    --color-bg: 244 245 250;         /* #f4f5fa */
+    --color-bg-panel: 255 255 255;
+    --color-bg-subtle: 243 244 248;
+    --color-bg-sidebar: 22 27 53;    /* sidebar stays dark */
+    --color-bg-topbar: 255 255 255;
+
+    --color-border: 226 229 238;     /* #e2e5ee */
+    --color-border-subtle: 237 239 246;
+
+    --color-ink: 26 32 64;
+    --color-ink-muted: 100 110 138;
+    --color-ink-subtle: 130 139 166;
+    --color-ink-faint: 154 162 184;
+    --color-ink-on-sidebar: 235 238 248;
+    --color-ink-on-sidebar-muted: 145 154 184;
+
+    --color-accent: 255 92 117;
+    --color-accent-surface: 255 232 236;
+    --color-accent-ring: 220 65 90;
+
+    --color-ok: 22 163 74;
+    --color-ok-surface: 220 252 231;
+    --color-ok-ring: 22 163 74;
+
+    --color-bad: 220 38 38;
+    --color-bad-surface: 254 226 226;
+    --color-bad-ring: 220 38 38;
+
+    --color-warn: 180 120 0;
+    --color-warn-surface: 254 243 199;
+    --color-warn-ring: 146 103 10;
+
+    --shadow-soft: 0 1px 2px rgba(20,28,60,.06), 0 1px 3px rgba(20,28,60,.04);
+    --shadow-pop: 0 18px 40px -12px rgba(20,28,60,.18), 0 4px 12px rgba(20,28,60,.06);
+
+    --overlay-1: 26 32 64;           /* ink tint on light */
+    --overlay-1-alpha: 0.04;
+    --overlay-2-alpha: 0.06;
+    --overlay-3-alpha: 0.10;
+  }
+
   html, body {
     @apply bg-bg text-ink antialiased;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
-  /* Tighter, financial-data-friendly numbers. */
   .tabular {
     font-variant-numeric: tabular-nums;
   }
 }
 
 @layer components {
-  /* Reusable focus ring across interactive elements. */
   .focus-ring {
     @apply outline-none ring-0 focus-visible:ring-2 focus-visible:ring-info/40 focus-visible:ring-offset-1 focus-visible:ring-offset-bg-panel;
   }
 
-  /* Surface = the elevated dark panels we put content on. */
   .surface {
     @apply bg-bg-panel border border-border rounded-xl;
   }
 
-  /* A scroll container that fades the bottom edge. */
   .scroll-fade {
     mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
   }
 
-  /* Skeleton shimmer — tuned for dark surfaces. */
   .skeleton {
     @apply relative overflow-hidden bg-bg-subtle rounded-lg;
     background-image: linear-gradient(
       90deg,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.06) 50%,
-      rgba(255, 255, 255, 0) 100%
+      rgba(255,255,255,0) 0%,
+      rgba(var(--overlay-1) / var(--overlay-2-alpha)) 50%,
+      rgba(255,255,255,0) 100%
     );
     background-size: 200% 100%;
     @apply animate-shimmer;
   }
+
+  /* Adaptive overlay backgrounds — replace the old bg-white/[0.04] etc. */
+  .overlay-1 { background-color: rgb(var(--overlay-1) / var(--overlay-1-alpha)); }
+  .overlay-2 { background-color: rgb(var(--overlay-1) / var(--overlay-2-alpha)); }
+  .overlay-3 { background-color: rgb(var(--overlay-1) / var(--overlay-3-alpha)); }
+  .hover-overlay-1:hover { background-color: rgb(var(--overlay-1) / var(--overlay-1-alpha)); }
+  .hover-overlay-2:hover { background-color: rgb(var(--overlay-1) / var(--overlay-2-alpha)); }
 }
 
-/* Custom scrollbars (dark). */
+/* Custom scrollbars — adapt to theme */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgb(var(--overlay-1) / 0.18);
   border-radius: 999px;
   border: 2px solid transparent;
   background-clip: padding-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.24);
+  background: rgb(var(--overlay-1) / 0.32);
   background-clip: padding-box;
   border: 2px solid transparent;
 }

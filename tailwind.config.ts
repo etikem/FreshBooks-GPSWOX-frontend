@@ -2,34 +2,57 @@ import type { Config } from 'tailwindcss';
 
 const config: Config = {
   content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}'],
+  darkMode: ['class', '[data-theme="dark"]'],
   theme: {
     extend: {
       fontFamily: {
         sans: ['var(--font-inter)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       colors: {
-        // Dark surface palette — matches /login (#050505 page, #0d0d0f panel,
-        // #161618 input, #1f8bff accent, white/10 hairlines).
+        // Surfaces — driven by CSS vars so light/dark swap cleanly.
         bg: {
-          DEFAULT: '#050505',
-          panel: '#0d0d0f',
-          subtle: '#161618',
+          DEFAULT: 'rgb(var(--color-bg) / <alpha-value>)',
+          panel: 'rgb(var(--color-bg-panel) / <alpha-value>)',
+          subtle: 'rgb(var(--color-bg-subtle) / <alpha-value>)',
+          sidebar: 'rgb(var(--color-bg-sidebar) / <alpha-value>)',
+          topbar: 'rgb(var(--color-bg-topbar) / <alpha-value>)',
         },
         border: {
-          DEFAULT: '#1f1f24',
-          subtle: '#16161a',
+          DEFAULT: 'rgb(var(--color-border) / <alpha-value>)',
+          subtle: 'rgb(var(--color-border-subtle) / <alpha-value>)',
         },
         ink: {
-          DEFAULT: '#fafafa',
-          muted: '#a3a3ad',
-          subtle: '#86868f',
-          faint: '#6a6a73',
+          DEFAULT: 'rgb(var(--color-ink) / <alpha-value>)',
+          muted: 'rgb(var(--color-ink-muted) / <alpha-value>)',
+          subtle: 'rgb(var(--color-ink-subtle) / <alpha-value>)',
+          faint: 'rgb(var(--color-ink-faint) / <alpha-value>)',
+          // Sidebar text — stays light in both modes since sidebar stays dark.
+          onSidebar: 'rgb(var(--color-ink-on-sidebar) / <alpha-value>)',
+          onSidebarMuted: 'rgb(var(--color-ink-on-sidebar-muted) / <alpha-value>)',
         },
-        // Status colors — saturated foreground over dark tinted surfaces.
-        ok: { DEFAULT: '#22c55e', surface: '#0f2a1c', ring: '#16a34a' },
-        bad: { DEFAULT: '#f87171', surface: '#2a0f12', ring: '#dc2626' },
-        warn: { DEFAULT: '#f59e0b', surface: '#2a1f0d', ring: '#92670a' },
-        info: { DEFAULT: '#1f8bff', surface: '#0c1f33', ring: '#1f8bff' },
+        // Status colors — saturated foreground over tinted surfaces.
+        ok: {
+          DEFAULT: 'rgb(var(--color-ok) / <alpha-value>)',
+          surface: 'rgb(var(--color-ok-surface) / <alpha-value>)',
+          ring: 'rgb(var(--color-ok-ring) / <alpha-value>)',
+        },
+        bad: {
+          DEFAULT: 'rgb(var(--color-bad) / <alpha-value>)',
+          surface: 'rgb(var(--color-bad-surface) / <alpha-value>)',
+          ring: 'rgb(var(--color-bad-ring) / <alpha-value>)',
+        },
+        warn: {
+          DEFAULT: 'rgb(var(--color-warn) / <alpha-value>)',
+          surface: 'rgb(var(--color-warn-surface) / <alpha-value>)',
+          ring: 'rgb(var(--color-warn-ring) / <alpha-value>)',
+        },
+        // `info` is the brand accent (coral in PowerPixel) — many existing
+        // components key off `info`, so changing this value re-skins them.
+        info: {
+          DEFAULT: 'rgb(var(--color-accent) / <alpha-value>)',
+          surface: 'rgb(var(--color-accent-surface) / <alpha-value>)',
+          ring: 'rgb(var(--color-accent-ring) / <alpha-value>)',
+        },
       },
       borderRadius: {
         lg: '10px',
@@ -37,10 +60,10 @@ const config: Config = {
         '2xl': '18px',
       },
       boxShadow: {
-        soft: '0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25)',
-        pop: '0 12px 32px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.35)',
-        ring: '0 0 0 4px rgba(31, 139, 255, 0.20)',
-        glow: '0 4px 16px -4px rgba(31, 139, 255, 0.5)',
+        soft: 'var(--shadow-soft)',
+        pop: 'var(--shadow-pop)',
+        ring: '0 0 0 4px rgb(var(--color-accent) / 0.20)',
+        glow: '0 6px 18px -6px rgb(var(--color-accent) / 0.55)',
       },
       keyframes: {
         'fade-in': {

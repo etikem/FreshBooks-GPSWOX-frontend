@@ -186,7 +186,7 @@ function Pager({
   const rangeEnd = Math.min(page * PAGE_SIZE, total);
 
   return (
-    <div className="px-4 py-3 border-t border-white/10 flex items-center justify-between gap-3 text-sm">
+    <div className="px-4 py-3 border-t border-border flex items-center justify-between gap-3 text-sm">
       <div className="text-ink-muted tabular">
         {rangeStart.toLocaleString()}–{rangeEnd.toLocaleString()} of{' '}
         {total.toLocaleString()}
