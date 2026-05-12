@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Mail, Lock, AlertTriangle } from 'lucide-react';
+import { User, Lock, AlertTriangle } from 'lucide-react';
 import { api, setToken } from '@/lib/api';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -19,7 +19,7 @@ export default function LoginPage() {
     try {
       const { token } = await api<{ token: string }>('/login', {
         method: 'POST',
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, password }),
       });
       setToken(token);
       router.replace('/dashboard');
@@ -49,11 +49,11 @@ export default function LoginPage() {
 
           <form onSubmit={onSubmit} className="mt-7 space-y-3">
             <InputField
-              icon={<Mail className="size-4" />}
-              type="email"
-              placeholder="email address"
-              value={email}
-              onChange={(v) => setEmail(v)}
+              icon={<User className="size-4" />}
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(v) => setUsername(v)}
               autoComplete="username"
             />
             <InputField
