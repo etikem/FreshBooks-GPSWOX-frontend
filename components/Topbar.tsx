@@ -1,13 +1,10 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { Bell, LogOut, Search, Settings, User } from 'lucide-react';
+import { LogOut, Menu, Search, User } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { clearToken } from '@/lib/api';
-import { useNotifications } from '@/lib/hooks';
-import type { NotificationsResponse } from '@/lib/types';
 
 const titleByPath: Record<string, string> = {
   '/dashboard': 'Dashboard',
@@ -16,13 +13,11 @@ const titleByPath: Record<string, string> = {
   '/retries': 'Retries',
 };
 
-export function Topbar() {
+export function Topbar({ onOpenMobileNav }: { onOpenMobileNav?: () => void }) {
   const router = useRouter();
   const path = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const notifications = useNotifications();
-  const notifCount = countNotifications(notifications.data);
 
   const title =
     Object.entries(titleByPath).find(([p]) => path?.startsWith(p))?.[1] ??
@@ -50,8 +45,15 @@ export function Topbar() {
   }
 
   return (
-    <header className="sticky top-0 z-30 h-16 bg-bg-topbar/85 backdrop-blur border-b border-border flex items-center gap-4 px-6">
-      <h1 className="text-[22px] font-semibold tracking-tight text-ink">
+    <header className="sticky top-0 z-30 h-16 bg-bg-topbar/85 backdrop-blur border-b border-border flex items-center gap-2 sm:gap-4 px-4 sm:px-6">
+      <button
+        onClick={onOpenMobileNav}
+        aria-label="Open navigation"
+        className="md:hidden size-9 inline-flex items-center justify-center rounded-lg text-ink-muted hover-overlay-1 hover:text-ink focus-ring transition-colors"
+      >
+        <Menu className="size-5" />
+      </button>
+      <h1 className="text-[18px] sm:text-[22px] font-semibold tracking-tight text-ink">
         {title}
       </h1>
 
@@ -69,29 +71,6 @@ export function Topbar() {
 
       <div className="ml-auto flex items-center gap-1.5">
         <ThemeToggle />
-
-        <Link
-          href="/logs"
-          aria-label={
-            notifCount
-              ? `${notifCount} notifications — view logs`
-              : 'View logs'
-          }
-          className="relative size-9 inline-flex items-center justify-center rounded-lg text-ink-muted hover-overlay-1 hover:text-ink focus-ring transition-colors"
-        >
-          <Bell className="size-4" />
-          {notifCount > 0 && (
-            <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-info ring-2 ring-bg-topbar" />
-          )}
-        </Link>
-
-        <Link
-          href="/retries"
-          aria-label="Retries"
-          className="size-9 inline-flex items-center justify-center rounded-lg text-ink-muted hover-overlay-1 hover:text-ink focus-ring transition-colors"
-        >
-          <Settings className="size-4" />
-        </Link>
 
         <div className="w-px h-6 mx-1 bg-border" aria-hidden />
 
@@ -121,15 +100,5 @@ export function Topbar() {
         </div>
       </div>
     </header>
-  );
-}
-
-function countNotifications(n: NotificationsResponse | undefined): number {
-  if (!n) return 0;
-  return (
-    n.cancelled.count +
-    n.webhookFailures.count +
-    n.failedRetries.count +
-    n.recentSyncErrors.count
   );
 }
