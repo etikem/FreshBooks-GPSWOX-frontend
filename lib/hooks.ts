@@ -23,8 +23,10 @@ export const qk = {
   clients: (q?: string, status?: string, page?: number, pageSize?: number) =>
     ['clients', { q, status, page, pageSize }] as const,
   client: (id: string) => ['client', id] as const,
-  actionLogs: ['logs', 'actions'] as const,
-  webhookEvents: ['logs', 'webhooks'] as const,
+  actionLogs: (page?: number, pageSize?: number) =>
+    ['logs', 'actions', { page, pageSize }] as const,
+  webhookEvents: (page?: number, pageSize?: number) =>
+    ['logs', 'webhooks', { page, pageSize }] as const,
   retries: (status?: string) => ['retries', { status }] as const,
 };
 
@@ -113,18 +115,34 @@ export function usePatchClient() {
   });
 }
 
-export function useActionLogs() {
+export function useActionLogs(page: number = 1, pageSize: number = 20) {
   return useQuery({
-    queryKey: qk.actionLogs,
-    queryFn: () => api<{ items: ActionLogItem[] }>('/logs/actions'),
+    queryKey: qk.actionLogs(page, pageSize),
+    queryFn: () => {
+      const params = new URLSearchParams();
+      params.set('take', String(pageSize));
+      params.set('skip', String((page - 1) * pageSize));
+      return api<{ items: ActionLogItem[]; total: number }>(
+        `/logs/actions?${params}`,
+      );
+    },
+    placeholderData: (prev) => prev,
     refetchInterval: 20_000,
   });
 }
 
-export function useWebhookEvents() {
+export function useWebhookEvents(page: number = 1, pageSize: number = 20) {
   return useQuery({
-    queryKey: qk.webhookEvents,
-    queryFn: () => api<{ items: WebhookEventItem[] }>('/logs/webhooks'),
+    queryKey: qk.webhookEvents(page, pageSize),
+    queryFn: () => {
+      const params = new URLSearchParams();
+      params.set('take', String(pageSize));
+      params.set('skip', String((page - 1) * pageSize));
+      return api<{ items: WebhookEventItem[]; total: number }>(
+        `/logs/webhooks?${params}`,
+      );
+    },
+    placeholderData: (prev) => prev,
     refetchInterval: 20_000,
   });
 }

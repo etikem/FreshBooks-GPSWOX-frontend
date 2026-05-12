@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { ScrollText, Webhook } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ChevronLeft, ChevronRight, ScrollText, Webhook } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardBody } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
 import { ActivityFeed } from '@/components/ActivityFeed';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -17,10 +18,27 @@ import {
 } from '@/components/ui/Table';
 import { useActionLogs, useWebhookEvents } from '@/lib/hooks';
 
+const PAGE_SIZE = 20;
+
 export default function LogsPage() {
   const [tab, setTab] = useState<'actions' | 'webhooks'>('actions');
-  const actions = useActionLogs();
-  const webhooks = useWebhookEvents();
+  const [actionsPage, setActionsPage] = useState(1);
+  const [webhooksPage, setWebhooksPage] = useState(1);
+  const actions = useActionLogs(actionsPage, PAGE_SIZE);
+  const webhooks = useWebhookEvents(webhooksPage, PAGE_SIZE);
+
+  // Clamp page if total shrinks below the current offset (e.g. after a purge).
+  useEffect(() => {
+    if (!actions.data) return;
+    const totalPages = Math.max(1, Math.ceil(actions.data.total / PAGE_SIZE));
+    if (actionsPage > totalPages) setActionsPage(totalPages);
+  }, [actions.data, actionsPage]);
+
+  useEffect(() => {
+    if (!webhooks.data) return;
+    const totalPages = Math.max(1, Math.ceil(webhooks.data.total / PAGE_SIZE));
+    if (webhooksPage > totalPages) setWebhooksPage(totalPages);
+  }, [webhooks.data, webhooksPage]);
 
   return (
     <div className="space-y-4">
@@ -33,11 +51,11 @@ export default function LogsPage() {
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as 'actions' | 'webhooks')} defaultValue="actions">
         <TabsList>
-          <TabsTrigger value="actions" count={actions.data?.items.length}>
+          <TabsTrigger value="actions" count={actions.data?.total}>
             <ScrollText className="size-3.5" />
             Actions
           </TabsTrigger>
-          <TabsTrigger value="webhooks" count={webhooks.data?.items.length}>
+          <TabsTrigger value="webhooks" count={webhooks.data?.total}>
             <Webhook className="size-3.5" />
             Webhooks
           </TabsTrigger>
@@ -67,6 +85,13 @@ export default function LogsPage() {
                   <ActivityFeed items={actions.data?.items ?? []} />
                 )}
               </CardBody>
+              {actions.data && actions.data.items.length > 0 && (
+                <Pager
+                  page={actionsPage}
+                  total={actions.data.total}
+                  onChange={setActionsPage}
+                />
+              )}
             </Card>
           </TabsContent>
 
@@ -132,10 +157,63 @@ export default function LogsPage() {
                   </tbody>
                 </Table>
               )}
+              {webhooks.data && webhooks.data.items.length > 0 && (
+                <Pager
+                  page={webhooksPage}
+                  total={webhooks.data.total}
+                  onChange={setWebhooksPage}
+                />
+              )}
             </Card>
           </TabsContent>
         </div>
       </Tabs>
+    </div>
+  );
+}
+
+function Pager({
+  page,
+  total,
+  onChange,
+}: {
+  page: number;
+  total: number;
+  onChange: (next: number) => void;
+}) {
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const rangeStart = total === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
+  const rangeEnd = Math.min(page * PAGE_SIZE, total);
+
+  return (
+    <div className="px-4 py-3 border-t border-white/10 flex items-center justify-between gap-3 text-sm">
+      <div className="text-ink-muted tabular">
+        {rangeStart.toLocaleString()}–{rangeEnd.toLocaleString()} of{' '}
+        {total.toLocaleString()}
+      </div>
+      <div className="flex items-center gap-2">
+        <Button
+          size="sm"
+          variant="secondary"
+          disabled={page <= 1}
+          onClick={() => onChange(Math.max(1, page - 1))}
+          iconLeft={<ChevronLeft className="size-4" />}
+        >
+          Prev
+        </Button>
+        <span className="text-ink-muted tabular px-1">
+          Page {page} / {totalPages}
+        </span>
+        <Button
+          size="sm"
+          variant="secondary"
+          disabled={page >= totalPages}
+          onClick={() => onChange(Math.min(totalPages, page + 1))}
+          iconRight={<ChevronRight className="size-4" />}
+        >
+          Next
+        </Button>
+      </div>
     </div>
   );
 }
