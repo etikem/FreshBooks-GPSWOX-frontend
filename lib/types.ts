@@ -56,8 +56,6 @@ export interface ClientListItem {
 
 export interface ClientDetail extends ClientListItem {
   gpswoxUserId: string | null;
-  contractStartDate: string;
-  contractEndDate: string;
   // Profile fields populated from /users/clients/<id> on client.* webhooks.
   firstName: string | null;
   lastName: string | null;

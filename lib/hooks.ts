@@ -94,8 +94,6 @@ export function useManualSync() {
 }
 
 export interface PatchClientInput {
-  contractStartDate?: string;
-  contractEndDate?: string;
   status?: ClientStatus;
   isUnlimited?: boolean;
 }

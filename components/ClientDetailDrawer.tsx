@@ -6,7 +6,6 @@ import {
   Hash,
   Cpu,
   Wallet,
-  CalendarDays,
   Phone,
   MapPin,
   Building2,
@@ -194,11 +193,6 @@ function Overview({ c }: { c: NonNullable<ReturnType<typeof useClient>['data']> 
           label="Access expires"
           value={c.isUnlimited ? 'Unlimited' : c.accessExpiresAt?.slice(0, 10) ?? '—'}
           tone={c.isUnlimited ? 'ok' : undefined}
-        />
-        <Stat
-          icon={<CalendarDays className="size-4" />}
-          label="Contract"
-          value={`${c.contractStartDate.slice(0, 10)} → ${c.contractEndDate.slice(0, 10)}`}
         />
         <Stat
           icon={<Hash className="size-4" />}
