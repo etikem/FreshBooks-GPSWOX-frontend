@@ -15,6 +15,7 @@ import type {
   RetryJobItem,
   ClientStatus,
   NotificationsResponse,
+  ReconciliationSnapshot,
 } from './types';
 
 export const qk = {
@@ -28,6 +29,7 @@ export const qk = {
   webhookEvents: (page?: number, pageSize?: number) =>
     ['logs', 'webhooks', { page, pageSize }] as const,
   retries: (status?: string) => ['retries', { status }] as const,
+  reconciliation: ['reconciliation'] as const,
 };
 
 export function useStats() {
@@ -109,6 +111,28 @@ export function usePatchClient() {
     onSuccess: (_, { id }) => {
       qc.invalidateQueries({ queryKey: qk.client(id) });
       qc.invalidateQueries({ queryKey: ['clients'] });
+    },
+  });
+}
+
+export function useReconciliation() {
+  return useQuery({
+    queryKey: qk.reconciliation,
+    queryFn: () => api<ReconciliationSnapshot>('/reconciliation'),
+    // Poll quickly while a sweep is in flight so the table fills in as soon
+    // as it finishes; idle otherwise.
+    refetchInterval: (query) =>
+      query.state.data?.status === 'running' ? 3_000 : false,
+  });
+}
+
+export function useRefreshReconciliation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () =>
+      api<ReconciliationSnapshot>('/reconciliation/refresh', { method: 'POST' }),
+    onSuccess: (data) => {
+      qc.setQueryData(qk.reconciliation, data);
     },
   });
 }

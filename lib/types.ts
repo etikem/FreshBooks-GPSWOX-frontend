@@ -143,6 +143,45 @@ export interface RetryJobItem {
   client?: { id: string; email: string } | null;
 }
 
+export interface MissingClient {
+  abctrackId: number;
+  clientId: number | null;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+}
+
+export interface VehicleMismatch {
+  abctrackId: number;
+  freshbooksClientId: string;
+  email: string;
+  name: string | null;
+  abctrackDevices: number;
+  freshbooksQty: number;
+  hasInvoices: boolean;
+  invoiceNumber: string | null;
+  invoiceDate: string | null;
+}
+
+export interface ReconciliationSnapshot {
+  status: 'idle' | 'running' | 'ready' | 'error';
+  generatedAt: string | null;
+  startedAt: string | null;
+  durationMs: number | null;
+  error: string | null;
+  stats: {
+    scanned: number;
+    active: number;
+    missing: number;
+    mismatch: number;
+    errors: number;
+  } | null;
+  missingInFreshbooks: MissingClient[];
+  vehicleMismatch: VehicleMismatch[];
+  rowErrors: Array<{ email: string; error: string }>;
+}
+
 export interface NotificationsResponse {
   cancelled: {
     count: number;

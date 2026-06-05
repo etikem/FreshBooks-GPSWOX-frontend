@@ -7,6 +7,7 @@ import {
   Users,
   ScrollText,
   RefreshCcw,
+  GitCompareArrows,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/cn';
@@ -28,6 +29,7 @@ const groups: NavGroup[] = [
     items: [
       { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
       { href: '/clients', label: 'Clients', icon: Users },
+      { href: '/reconciliation', label: 'Reconciliation', icon: GitCompareArrows },
     ],
   },
   {
