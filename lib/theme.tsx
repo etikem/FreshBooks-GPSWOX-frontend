@@ -27,7 +27,12 @@ function readInitialTheme(): Theme {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>(readInitialTheme);
+  // Initialise to the SAME value the server renders with ('dark') so the first
+  // client render matches the SSR HTML — reading the real theme from the DOM
+  // here would make light-mode users hydrate with 'light' against a 'dark'
+  // server tree and throw React hydration error #418. The real theme is
+  // adopted just below in useEffect, after hydration completes.
+  const [theme, setThemeState] = useState<Theme>('dark');
 
   const setTheme = useCallback((t: Theme) => {
     setThemeState(t);
