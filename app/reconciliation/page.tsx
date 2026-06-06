@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   AlertTriangle,
   Loader2,
+  Search,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -26,6 +27,18 @@ export default function ReconciliationPage() {
 
   const running = data?.status === 'running' || refresh.isPending;
   const stats = data?.stats;
+
+  // Client-side email filter, applied to both tabs. The snapshot already
+  // holds the full result set, so we filter in-memory; pagination re-clamps
+  // automatically when the filtered list shrinks (see usePagination).
+  const [q, setQ] = useState('');
+  const ql = q.trim().toLowerCase();
+  const missingRows = (data?.missingInFreshbooks ?? []).filter((r) =>
+    ql ? r.email.toLowerCase().includes(ql) : true,
+  );
+  const vehicleRows = (data?.vehicleMismatch ?? []).filter((r) =>
+    ql ? r.email.toLowerCase().includes(ql) : true,
+  );
 
   return (
     <div className="space-y-4">
@@ -77,27 +90,38 @@ export default function ReconciliationPage() {
         <Tabs defaultValue="missing" value={tab} onValueChange={setTab}>
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <TabsList>
-              <TabsTrigger value="missing" count={stats?.missing}>
+              <TabsTrigger value="missing" count={ql ? missingRows.length : stats?.missing}>
                 Missing in FreshBooks
               </TabsTrigger>
-              <TabsTrigger value="vehicles" count={stats?.mismatch}>
+              <TabsTrigger value="vehicles" count={ql ? vehicleRows.length : stats?.mismatch}>
                 Vehicle mismatch
               </TabsTrigger>
             </TabsList>
-            {data?.status === 'running' && (
-              <span className="inline-flex items-center gap-2 text-xs text-ink-muted">
-                <Loader2 className="size-3.5 animate-spin" />
-                Refreshing…
-              </span>
-            )}
+            <div className="flex items-center gap-3">
+              {data?.status === 'running' && (
+                <span className="inline-flex items-center gap-2 text-xs text-ink-muted">
+                  <Loader2 className="size-3.5 animate-spin" />
+                  Refreshing…
+                </span>
+              )}
+              <div className="relative w-full sm:w-64">
+                <Search className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint" />
+                <input
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  placeholder="Filter by email"
+                  className="w-full h-8 pl-9 pr-3 rounded-lg bg-bg-subtle border border-border hover:border-info/40 focus:border-info/60 focus:bg-bg-panel text-sm text-ink placeholder:text-ink-faint focus-ring transition-colors"
+                />
+              </div>
+            </div>
           </div>
 
           <TabsContent value="missing" className="mt-3">
-            <MissingTable rows={data?.missingInFreshbooks ?? []} />
+            <MissingTable rows={missingRows} query={ql} />
           </TabsContent>
 
           <TabsContent value="vehicles" className="mt-3">
-            <VehicleTable rows={data?.vehicleMismatch ?? []} />
+            <VehicleTable rows={vehicleRows} query={ql} />
           </TabsContent>
         </Tabs>
       )}
@@ -116,11 +140,13 @@ export default function ReconciliationPage() {
   );
 }
 
-function MissingTable({ rows }: { rows: MissingClient[] }) {
+function MissingTable({ rows, query }: { rows: MissingClient[]; query: string }) {
   const { page, setPage, pageSize, total, pageRows } = usePagination(rows, 25);
 
   if (rows.length === 0) {
-    return (
+    return query ? (
+      <NoMatches />
+    ) : (
       <Card>
         <EmptyState
           icon={<CheckCircle2 className="size-5 text-ok" />}
@@ -170,11 +196,13 @@ function MissingTable({ rows }: { rows: MissingClient[] }) {
   );
 }
 
-function VehicleTable({ rows }: { rows: VehicleMismatch[] }) {
+function VehicleTable({ rows, query }: { rows: VehicleMismatch[]; query: string }) {
   const { page, setPage, pageSize, total, pageRows } = usePagination(rows, 25);
 
   if (rows.length === 0) {
-    return (
+    return query ? (
+      <NoMatches />
+    ) : (
       <Card>
         <EmptyState
           icon={<CheckCircle2 className="size-5 text-ok" />}
@@ -255,6 +283,18 @@ function VehicleTable({ rows }: { rows: VehicleMismatch[] }) {
         pageSize={pageSize}
         total={total}
         onPageChange={setPage}
+      />
+    </Card>
+  );
+}
+
+function NoMatches() {
+  return (
+    <Card>
+      <EmptyState
+        icon={<Search className="size-5" />}
+        title="No clients match"
+        description="No rows on this tab match that email. Clear the filter to see everything."
       />
     </Card>
   );
